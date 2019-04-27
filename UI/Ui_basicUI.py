@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.PtShowWidget = MatplotlibWidget(self.centralWidget)
-        self.PtShowWidget.setGeometry(QtCore.QRect(22, 12, 661, 821))
+        self.PtShowWidget.setGeometry(QtCore.QRect(22, 12, 661, 741))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -117,6 +117,12 @@ class Ui_MainWindow(object):
         self.AnimationButton = QtWidgets.QPushButton(self.centralWidget)
         self.AnimationButton.setGeometry(QtCore.QRect(1060, 590, 121, 23))
         self.AnimationButton.setObjectName("AnimationButton")
+        self.AxisFielddoubleSpinBox = QtWidgets.QDoubleSpinBox(self.centralWidget)
+        self.AxisFielddoubleSpinBox.setGeometry(QtCore.QRect(520, 800, 62, 22))
+        self.AxisFielddoubleSpinBox.setObjectName("AxisFielddoubleSpinBox")
+        self.label_8 = QtWidgets.QLabel(self.centralWidget)
+        self.label_8.setGeometry(QtCore.QRect(420, 800, 81, 16))
+        self.label_8.setObjectName("label_8")
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
@@ -139,6 +145,7 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "Euler角"))
         self.label_7.setText(_translate("MainWindow", "平移"))
         self.AnimationButton.setText(_translate("MainWindow", "Animation Start"))
+        self.label_8.setText(_translate("MainWindow", "View Volume"))
 
 from UI.MatplotlibWidget import MatplotlibWidget
 

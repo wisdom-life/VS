@@ -97,7 +97,7 @@
       <x>22</x>
       <y>12</y>
       <width>661</width>
-      <height>821</height>
+      <height>741</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -341,6 +341,29 @@
     </property>
     <property name="text">
      <string>Animation Start</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="AxisFielddoubleSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>800</y>
+      <width>62</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>800</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>View Volume</string>
     </property>
    </widget>
   </widget>

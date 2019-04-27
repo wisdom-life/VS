@@ -4,9 +4,21 @@ from UI.MatplotlibWidget  import Arrow3D
 
 class CoordinateSet(object):
     """Represent 3D points in Special Frame"""
+    
+    BasicSet = set()
+    
+    # define origin
+    o = np.array([0,0,0])
+    
+         # define ox0y0z0 axes
+    x0 = np.array([1,0,0])
+    y0 = np.array([0,1,0])
+    z0 = np.array([0,0,1])
+    
+    psi = 0.0
+    theta = 0.0
+    phi = 0.0
   
-    
-    
 #    # define ox1y1z1 axes
 #    psi = 20 * np.pi / 180
 #    x1 = Rz(psi).dot(x0)
@@ -24,28 +36,17 @@ class CoordinateSet(object):
 #    x3 = Rz(psi).dot(Ry(theta)).dot(Rx(phi)).dot(x0)
 #    y3 = Rz(psi).dot(Ry(theta)).dot(Rx(phi)).dot(y0)
 #    z3 = Rz(psi).dot(Ry(theta)).dot(Rx(phi)).dot(z0)
-
+  
     
     def __init__(self, *args):
-        self.BasicSet = set()
-      
-        
-         # define origin
-        self.o = np.array([0,0,0])
-    
-         # define ox0y0z0 axes
-        self.x0 = np.array([1,0,0])
-        self.y0 = np.array([0,1,0])
-        self.z0 = np.array([0,0,1])
-        self.psi = 0.0
-        self.theta = 0.0
-        self.phi = 0.0
         
         self.Set_BaseCS()
         self.scale = 2.0
         self.axis_x = Arrow3D([-0.5*self.scale,0.5*self.scale],[0,   0],[0,0], mutation_scale=20, lw=1, arrowstyle="-|>", color="r")
         self.axis_y = Arrow3D([0,0],[-0.5*self.scale,0.5*self.scale],[0,0], mutation_scale=20, lw=1, arrowstyle="-|>", color="g")
         self.axis_z = Arrow3D([0,0],[0,0],[-0.5*self.scale,0.5*self.scale], mutation_scale=20, lw=1, arrowstyle="-|>", color="b")
+        
+        self.PtShow = None #receive Pt mark instance
     
     
     def Set_BaseCS(self, input_psi = 0.0, input_theta = 0.0,  input_phi = 0.0,  input_o = [0, 0, 0]):
@@ -85,6 +86,15 @@ class CoordinateSet(object):
                      [np.sin(psi), np.cos(psi), 0],
                      [0, 0, 1]])
 
-    
+    def GetCSValue(self):
+        if len(self.BasicSet) is 0:
+            return np.NaN
+        
+        PtData = np.array(list(self.BasicSet))
+        xs = PtData[:, 0]
+        ys = PtData[:, 1]
+        zs = PtData[:, 2]
+     
+        return xs, ys, zs
     
     

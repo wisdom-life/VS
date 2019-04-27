@@ -101,11 +101,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.VectorShowCheckBox.setChecked(True)
         self.CoordinateRadioButton.setChecked(True)
         
-        self.PtShowWidget.direct_draw_CS(self.m_PtSet.axis_x,self.m_PtSet.axis_y, self.m_PtSet.axis_z)
-#        self.PtShowWidget.drawCoordsystem(2.0)
+      
+        self.PtShowWidget.drawCoordsystem(1.0) #the CS embedded in Widget
         
+#        self.PtShowWidget.direct_draw_CS(self.m_PtSet.axis_x,self.m_PtSet.axis_y, self.m_PtSet.axis_z) #show PtSet instance's CS
         
         self.PtShowWidget.SetViewRange(3.0)
+        self.PtShowWidget.CSScaleChange(3.0)
 #        self.PtShowWidget.drawVector()
         # test code district
         
@@ -136,9 +138,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.TFMatrixtableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.TFMatrixtableWidget.resizeColumnsToContents()
         
+         # test code district
+        self.AxisFielddoubleSpinBox.setRange(0.5, 100.0)
+        self.AxisFielddoubleSpinBox.setDecimals(1)
+        self.AxisFielddoubleSpinBox.setValue(3.0)
+        self.AxisFielddoubleSpinBox.setSingleStep(0.5)
+        self.AxisFielddoubleSpinBox.valueChanged.connect(self.ViewRangeChange)
+        
         
     def ChooseItem(self, qModelIndex): 
         self.beChosedItemIndex = qModelIndex.row()
+    
+    def ViewRangeChange(self):
+        self.PtShowWidget.SetViewRange( self.AxisFielddoubleSpinBox.value())
+        self.PtShowWidget.CSScaleChange(self.AxisFielddoubleSpinBox.value())
+#        self.PtShowWidget.drawCoordsystem(self.AxisFielddoubleSpinBox.value())
+
+        self.PtShowWidget.mpl.draw()
         
         
     def CSparmChange(self): 
@@ -186,7 +202,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSlot()
     def on_AnimationButton_clicked(self):
         
-        x, y, z = self.PtShowWidget.createaxis(1.0)
+        self.PtShowWidget.direct_draw_CS(self.m_PtSet.axis_x,self.m_PtSet.axis_y, self.m_PtSet.axis_z) #show PtSet instance's CS
+#        x, y, z = self.PtShowWidget.createaxis(1.0)
         
         #FuncAnimation(fig, func, frames=None, init_func=None, fargs=None, save_count=None, **kwargs)
         self.anim = animation.FuncAnimation(self.PtShowWidget.mpl.fig, self.cs_animate,  # 传入之前定义的两个函数
@@ -194,7 +211,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                frames=100, # 传入更新绘图数据的参数，此处代表animate函数的
                                            # 参数i从1变化到360
                                interval=10,  # 刷新速率
-                               blit=False)  # 重叠区域不重绘（可提升效率）
+                               blit=False,  # 重叠区域不重绘（可提升效率）
+                               repeat=False) 
         self.PtShowWidget.mpl.draw()
         pass
         
@@ -221,9 +239,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         self.PtSetListShow()
         
-        self.PtShowWidget.mpl.axes.cla()
+#        self.PtShowWidget.mpl.axes.cla()
+        xs, ys, zs = self.m_PtSet.GetCSValue()
+        self.m_PtSet.PtShow=self.PtShowWidget.PtScatter(xs, ys, zs, self.m_PtSet.PtShow)
+        self.PtShowWidget.mpl.draw()
         
-        self.DrawAllVector( Pt = self.PtSet)
+#        self.DrawAllVector( Pt = self.PtSet)
       
         
 #        self.PtShowWidget.drawVector((float(xx), float(yy), float(zz)))
@@ -242,6 +263,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 #        print((float(num) for num in self.qList[self.beChosedItemIndex]))
 
+
         self.PtSet.remove(self.ViewToModeldict[self.qList[self.beChosedItemIndex]])
         self.ViewToModeldict.pop(self.qList[self.beChosedItemIndex])
 #        self.PtSet.discard((float(num) for num in self.qList[self.beChosedItemIndex]))
@@ -252,9 +274,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.slm.setStringList(self.qList)
         self.PtSetListView.setModel(self.slm)
         self.beChosedItemIndex = None
+        
+#        self.m_PtSet.PtShow.remove()
     
-        self.PtShowWidget.mpl.axes.cla()
-        self.DrawAllVector( Pt = self.PtSet)
+#        self.PtShowWidget.mpl.axes.cla()
+        if len(self.PtSet) is 0:
+            self.m_PtSet.PtShow.remove()
+            self.m_PtSet.PtShow = None
+            self.PtShowWidget.mpl.draw()
+            return
+       
+        xs, ys, zs = self.m_PtSet.GetCSValue()
+        self.m_PtSet.PtShow=self.PtShowWidget.PtScatter(xs, ys, zs, self.m_PtSet.PtShow)
+#        self.PtShowWidget.DelScatter()
+#        self.DrawAllVector( Pt = self.PtSet)
+
         self.PtShowWidget.mpl.draw()
         
     def PtSetListShow(self):

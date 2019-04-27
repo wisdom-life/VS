@@ -66,15 +66,15 @@ class MatplotlibWidget(QWidget):
         self.layout.addWidget(self.mpl)
         self.layout.addWidget(self.mpl_ntb)
         
-    def createaxis(self,  scale = 1.0):
-        x = Arrow3D([-0.5*scale,0.5*scale],[0,   0],[0,0], mutation_scale=20, lw=1, arrowstyle="-|>", color="r")
-        y = Arrow3D([0,0],[-0.5*scale,0.5*scale],[0,0], mutation_scale=20, lw=1, arrowstyle="-|>", color="g")
-        z = Arrow3D([0,0],[0,0],[-0.5*scale,0.5*scale], mutation_scale=20, lw=1, arrowstyle="-|>", color="b")
+    def createaxis(self,  scale = 1.0): #set the CS axis as parms
+        self.x = Arrow3D([-0.5*scale,0.5*scale],[0,   0],[0,0], mutation_scale=20, lw=1, arrowstyle="-|>", color="r")
+        self.y = Arrow3D([0,0],[-0.5*scale,0.5*scale],[0,0], mutation_scale=20, lw=1, arrowstyle="-|>", color="g")
+        self.z = Arrow3D([0,0],[0,0],[-0.5*scale,0.5*scale], mutation_scale=20, lw=1, arrowstyle="-|>", color="b")
 #        x.set_animated(False)
 #        x.set_positions((0, 0, 0), (0.5, -0.5, 0.5))
 #        x._verts3d =[0, 1], [0, 1], [0, 1]
 #        x.stale =True
-        return x, y, z
+        return self.x, self.y, self.z
         
     def drawVector(self, Pt =(1.0, 1.0, 1.0)):
         v = Arrow3D([0,Pt[0]],[0,Pt[1]],[0,Pt[2]], mutation_scale=10, lw=0.5, arrowstyle="-|>", color="y")
@@ -86,6 +86,13 @@ class MatplotlibWidget(QWidget):
         self.mpl.axes.add_artist(x)
         self.mpl.axes.add_artist(y)
         self.mpl.axes.add_artist(z)
+        
+        
+    def CSScaleChange(self, scale = 1.0):
+        self.x.change_verts3d([-0.5*scale,0.5*scale],[0,   0],[0,0])
+        self.y.change_verts3d([0,0],[-0.5*scale,0.5*scale],[0,0])
+        self.z.change_verts3d([0,0],[0,0],[-0.5*scale,0.5*scale])
+        
         
     def direct_draw_CS(self, axis_x, axis_y, axis_z):
         self.mpl.axes.add_artist(axis_x)
@@ -113,8 +120,27 @@ class MatplotlibWidget(QWidget):
     def SetViewRange(self,  scale = 1.0):
         self.mpl.axes.set(xlim=(-1*scale, 1*scale), ylim=(-1*scale, 1*scale), zlim=(-1*scale, 1*scale))
         
-     
-     
+    def PtScatter(self, xs, ys, zs, ptShow):
+#        self.mpl.axes.cla()
+        newPtShow = self.mpl.axes.scatter(xs, ys, zs, c='r', marker='o')
+        if ptShow is None:
+            pass
+        else:
+            ptShow.remove()
+            
+        
+        for  x, y, z in zip( xs, ys, zs):
+            label = '(%d, %d, %d)' % (x, y, z)
+            self.mpl.axes.text(1.1*x, 1.1*y, 1.1*z, label)
+      
+#        self.PtShow.remove()
+#        self.PtShow.axes.cla()
+        return newPtShow
+        
+    def DelScatter(self, ptShow):
+       ptShow.remove() 
+       ptShow.set_visible(False)
+       self.mpl.draw()
 #        self.mpl.axes.scatter(0.0, 0.0, 0.0)
         
 if __name__ == '__main__':
